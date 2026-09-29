@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nokkie ($NOKK) — Still nodding</title>
+  <meta name="description" content="Nokkie — $NOKK on Solana. Still nodding. Never leaving. Fair launch via pump.fun. No promises — just vibes." />
+  <link rel="icon" href="assets/nokkie-pumpfun-512.png" type="image/png" />
+  <style>
+    :root {
+      --cream: #FDFBF7;
+      --purple: #A87FE2;
+      --purple-deep: #6B4A9E;
+      --mint: #76DDB4;
+      --ink: #2B1B4D;
+      --card: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: ui-rounded, "Segoe UI", system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    header { text-align: center; margin-bottom: 2rem; }
+    .logo {
+      width: min(280px, 70vw);
+      height: auto;
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(168, 127, 226, 0.25);
+    }
+    h1 {
+      font-size: clamp(2rem, 6vw, 2.75rem);
+      margin-top: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .ticker {
+      display: inline-block;
+      margin-top: 0.35rem;
+      padding: 0.2rem 0.75rem;
+      border-radius: 999px;
+      background: var(--mint);
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .tagline {
+      margin-top: 0.75rem;
+      font-size: 1.25rem;
+      color: var(--purple-deep);
+      font-weight: 600;
+    }
+    .card {
+      background: var(--card);
+      border: 2px solid rgba(168, 127, 226, 0.25);
+      border-radius: 20px;
+      padding: 1.35rem 1.5rem;
+      margin-top: 1.25rem;
+      box-shadow: 0 4px 20px rgba(43, 27, 77, 0.06);
+    }
+    .card h2 {
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--purple);
+      margin-bottom: 0.5rem;
+    }
+    .card p { color: var(--ink); opacity: 0.9; }
+    .links {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .links a {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 2px solid var(--purple);
+      color: var(--ink);
+      background: #fff;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .links a:hover { transform: translateY(-1px); background: #f5effc; }
+    .links a.primary {
+      background: var(--purple);
+      color: #fff;
+      border-color: var(--purple);
+    }
+    .links a.primary:hover { background: var(--purple-deep); }
+    .links a[aria-disabled="true"] {
+      opacity: 0.55;
+      pointer-events: none;
+      border-style: dashed;
+    }
+    .meta {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+      color: var(--purple-deep);
+    }
+    .meta code {
+      display: inline-block;
+      margin-top: 0.35rem;
+      padding: 0.35rem 0.6rem;
+      background: #efe6fb;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      word-break: break-all;
+    }
+    .memes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .memes img {
+      width: 100%;
+      border-radius: 14px;
+      border: 2px solid rgba(118, 221, 180, 0.5);
+      background: #fff;
+    }
+    footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #6a5a80;
+      max-width: 36rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (max-width: 520px) {
+      .memes { grid-template-columns: 1fr; max-width: 240px; margin-left: auto; margin-right: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img class="logo" src="assets/nokkie-logo.png" alt="Nokkie logo" />
+      <h1>Nokkie</h1>
+      <div class="ticker">$NOKK</div>
+      <p class="tagline">Still nodding. Never leaving.</p>
+    </header>
+
+    <section class="card">
+      <h2>Lore</h2>
+      <p>
+        Nokkie is a purple still-nodding blob on Solana. Fair launch via pump.fun.
+        No roadmap theater, no price promises — just vibes, memes, and a friendly nod that never stops.
+        Ticker <strong>$NOKK</strong> (not NOKKI). Join the nod.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Token</h2>
+      <p>
+        <strong>Name:</strong> Nokkie<br />
+        <strong>Ticker:</strong> $NOKK<br />
+        <strong>Chain:</strong> Solana<br />
+        <strong>Launch:</strong> pump.fun (fair)
+      </p>
+      <div class="meta">
+        Contract / CA<br />
+        <code id="ca">GJN8os2P4uewmVSCqeAyc2xXpTczeRjGSdoXsFhXpump</code>
+      </div>
+    </section>
+
+    <nav class="links" aria-label="Nokkie links">
+      <a class="primary" href="https://pump.fun/coin/GJN8os2P4uewmVSCqeAyc2xXpTczeRjGSdoXsFhXpump" id="link-pump">Buy on pump.fun</a>
+      <a href="https://x.com/_nokkie_" id="link-x" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+      <a href="#" id="link-tg" aria-disabled="true" title="Coming soon">Telegram · soon</a>
+    </nav>
+
+    <section class="card">
+      <h2>Memes</h2>
+      <div class="memes">
+        <img src="memes/nokkie-meme-still-nodding.png" alt="Still nodding sticker" />
+        <img src="memes/nokkie-meme-gm.png" alt="GM Nokkie sticker" />
+        <img src="memes/nokkie-meme-just-nod.png" alt="Just nod sticker" />
+      </div>
+    </section>
+
+    <footer>
+      Nokkie is a meme coin for entertainment. Not financial advice. Crypto is risky —
+      only spend what you can afford to lose. No guaranteed returns.
+    </footer>
+  </div>
+</body>
+</html>

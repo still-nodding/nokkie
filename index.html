@@ -133,6 +133,28 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    .roadmap { list-style: none; margin-top: 0.75rem; display: grid; gap: 0.85rem; }
+    .roadmap li {
+      position: relative;
+      padding: 0.85rem 1rem 0.85rem 1.1rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(168,127,226,0.08), rgba(118,221,180,0.12));
+      border: 1px solid rgba(168,127,226,0.22);
+    }
+    .roadmap .phase {
+      font-weight: 800;
+      color: var(--purple-deep);
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+    .roadmap .feel {
+      font-size: 0.82rem;
+      color: var(--purple);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    .roadmap p { font-size: 0.92rem; opacity: 0.92; }
     @media (max-width: 520px) {
       .memes { grid-template-columns: 1fr; max-width: 240px; margin-left: auto; margin-right: auto; }
     }
@@ -151,7 +173,7 @@
       <h2>Lore</h2>
       <p>
         Nokkie is a purple still-nodding blob on Solana. Fair launch via pump.fun.
-        No roadmap theater, no price promises — just vibes, memes, and a friendly nod that never stops.
+        No price promises — just vibes, memes, and a friendly nod that never stops.
         Ticker <strong>$NOKK</strong> (not NOKKI). Join the nod.
       </p>
     </section>
@@ -175,6 +197,36 @@
       <a href="https://x.com/_nokkie_" id="link-x" target="_blank" rel="noopener noreferrer">X / Twitter</a>
       <a href="https://t.me/nokkie_community" id="link-tg" target="_blank" rel="noopener noreferrer">Telegram</a>
     </nav>
+
+
+    <section class="card" id="roadmap">
+      <h2>Roadmap</h2>
+      <p style="margin-bottom:0.35rem;opacity:0.9">
+        Not a promise list. A feeling list. We grow the nod — then we bring Nokkie to life.
+      </p>
+      <ol class="roadmap">
+        <li>
+          <div class="phase">1 · The Nod</div>
+          <div class="feel">Safe · clear · still nodding</div>
+          <p>Community open. Verify before you click. Soft culture over noise. $NOKK ≠ NOKKI.</p>
+        </li>
+        <li>
+          <div class="phase">2 · Soft Timeline</div>
+          <div class="feel">Wholesome chaos · daily nods</div>
+          <p>Memes, GIFs, soft replies. Stay kind. Stay weird. Never fake urgency.</p>
+        </li>
+        <li>
+          <div class="phase">3 · Never Leaving</div>
+          <div class="feel">Ritual · belonging · stick around</div>
+          <p>Deeper community habits. Stickers everywhere. Nodders who stay for the vibe, not the noise.</p>
+        </li>
+        <li>
+          <div class="phase">4 · Bring Nokkie to Life</div>
+          <div class="feel">Character · motion · heart</div>
+          <p>More than a logo: stories, motion, voice, and little worlds where Nokkie feels real. Soft merch energy. Always a nod — never a guarantee.</p>
+        </li>
+      </ol>
+    </section>
 
     <section class="card">
       <h2>Memes</h2>

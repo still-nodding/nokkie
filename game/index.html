@@ -86,7 +86,7 @@ let obs=[],lives=3,inv=0,nextObs=0,state='menu',y,vy,maxY,combo,nod,popups,cloud
 $('best').textContent='Best '+best+' m';
 
 function seedClouds(){clouds=[];for(let i=0;i<40;i++)clouds.push({x:Math.random(),y:i*260+Math.random()*200+150,s:.6+Math.random()*.8})}
-function reset(){obs=[];lives=3;inv=0;nextObs=M*12;y=0;vy=0;maxY=0;combo=0;nod=0;popups=[];sparks=[];camY=0;seedClouds()}
+function reset(){obs=[];lives=3;inv=0;nextObs=M*20;y=0;vy=0;maxY=0;combo=0;nod=0;popups=[];sparks=[];camY=0;seedClouds()}
 reset();
 
 function pop(t,c){popups.push({t,c,life:1,x:W/2+(Math.random()*60-30),y:H*0.45})}
@@ -105,11 +105,11 @@ const FUDS=['FUD','ngmi?','meh.','nah.','boring','cope?','zzz'];
 function spawnObs(){
   const t=KINDS[Math.floor(Math.random()*KINDS.length)];
   const fromLeft=Math.random()<.5, lvl=Math.min(1,maxY/(M*300));
-  const sp=(70+Math.random()*80+lvl*140)*(fromLeft?1:-1);
+  const sp=(50+Math.random()*60+lvl*90)*(fromLeft?1:-1);
   obs.push({...t,txt:FUDS[Math.floor(Math.random()*FUDS.length)],x:t.w*OS/2+Math.random()*(W-t.w*OS),y:nextObs,vx:sp,ph:Math.random()*6});
-  nextObs+=M*(11-lvl*5)+Math.random()*M*7;
+  nextObs+=M*(15-lvl*5)+Math.random()*M*8;
 }
-const OS=0.6;
+const OS=0.45;
 function drawObs(o,sx,sy){
   ctx.save();ctx.translate(sx,sy);ctx.scale(OS,OS);
   const lil='#9b86c9';
@@ -158,7 +158,7 @@ $('again').onclick=e=>{e.stopPropagation();start()};
 cv.addEventListener('pointerdown',e=>{e.preventDefault();tap()});
 addEventListener('keydown',e=>{if(document.activeElement===$('name'))return;if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(state!=='play')start();else tap()}});
 
-function hit(o){lives--;inv=1.2;combo=0;vy=Math.min(vy,-350);pop('Bonk! '+o.label,'#6B4A9E');$('lives').textContent='🌱'.repeat(Math.max(0,lives))+'○'.repeat(3-Math.max(0,lives));if(lives<=0)end()}
+function hit(o){lives--;inv=1.5;combo=0;vy=Math.min(vy,-350);pop('Bonk! '+o.label,'#6B4A9E');$('lives').textContent='🌱'.repeat(Math.max(0,lives))+'○'.repeat(3-Math.max(0,lives));if(lives<=0)end()}
 function step(dt){
   // upward positive
   vy-=G*dt; y+=vy*dt;
@@ -168,7 +168,7 @@ function step(dt){
   while(nextObs<camY+H*1.6)spawnObs();
   obs.forEach(o=>{o.x+=o.vx*dt;if(o.x<o.w*OS/2){o.x=o.w*OS/2;o.vx=Math.abs(o.vx)}if(o.x>W-o.w*OS/2){o.x=W-o.w*OS/2;o.vx=-Math.abs(o.vx)}});
   obs=obs.filter(o=>o.y>camY-200);
-  if(inv<=0){const bx=W/2,by=y+58;for(const o of obs){const dx=Math.max(Math.abs(o.x-bx)-o.w*OS/2,0),dy=Math.max(Math.abs(o.y-by)-o.h*OS/2,0);if(dx*dx+dy*dy<38*38){hit(o);break}}}
+  if(inv<=0){const bx=W/2,by=y+58;for(const o of obs){const dx=Math.max(Math.abs(o.x-bx)-o.w*OS/2,0),dy=Math.max(Math.abs(o.y-by)-o.h*OS/2,0);if(dx*dx+dy*dy<30*30){hit(o);break}}}
 
   nod=Math.max(0,nod-dt*5);
   const target=Math.max(0,y-H*0.35);camY+= (target-camY)*Math.min(1,dt*6);

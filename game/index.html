@@ -7,7 +7,14 @@
 <meta name="description" content="Nod Nokkie as high as you can. No wallet. No sign-up. Just nodding." />
 <meta property="og:title" content="Nod High · Nokkie" />
 <meta property="og:description" content="Nod Nokkie as high as you can. No wallet. No sign-up. Just nodding." />
-<meta property="og:image" content="https://still-nodding.github.io/nokkie/assets/nokkie-pumpfun-512.png" />
+<meta property="og:url" content="https://still-nodding.github.io/nokkie/game/" />
+<meta property="og:image" content="https://still-nodding.github.io/nokkie/game/og-nod-high.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Nod High · Nokkie" />
+<meta name="twitter:description" content="How high can Nokkie nod? No wallet. No sign-up. Just nodding." />
+<meta name="twitter:image" content="https://still-nodding.github.io/nokkie/game/og-nod-high.png" />
 <meta name="robots" content="noindex" />
 <link rel="icon" href="../assets/nokkie-pumpfun-512.png" type="image/png" />
 <style>
@@ -38,7 +45,7 @@
   <div class="hud"><span class="pill" id="h">0 m</span><span class="pill" id="best">Best 0 m</span></div>
 
   <div class="overlay" id="start">
-    <img src="nokkie.png" alt="Nokkie" width="150" height="150" style="border-radius:24px" />
+    <img src="nokkie-bean.png" alt="Nokkie" width="150" style="height:auto;filter:drop-shadow(0 8px 18px rgba(107,74,158,.3))" />
     <h1>Nod High</h1>
     <p class="tag">How high can Nokkie nod?</p>
     <p class="how">Tap (or press space) to launch. Tap again right at the top of each hop for a big nod boost. Too early wastes it. Touch the ground and it's over.</p>
@@ -66,7 +73,8 @@
 <script>
 (()=>{
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
-const img=new Image();img.src='nokkie.png';
+const bean=new Image();bean.src='nokkie-bean.png';
+function cloud(x,y,k){ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(x,y,70*k,18*k,0,0,7);ctx.ellipse(x-36*k,y-6*k,28*k,16*k,0,0,7);ctx.ellipse(x+34*k,y-5*k,30*k,17*k,0,0,7);ctx.ellipse(x,y-10*k,34*k,16*k,0,0,7);ctx.fill();ctx.fillStyle='rgba(168,127,226,.18)';ctx.beginPath();ctx.ellipse(x,y+8*k,62*k,7*k,0,0,7);ctx.fill()}
 const $=id=>document.getElementById(id);
 const M=40; // px per meter
 let W,H,dpr;
@@ -154,14 +162,14 @@ function draw(){
   const cx=W/2;
   // shadow
   if(ground<H+10){const s=Math.max(.2,1-y/(M*15));ctx.fillStyle=`rgba(43,27,77,${.18*s})`;ctx.beginPath();ctx.ellipse(cx,ground+2,40*s,8*s,0,0,7);ctx.fill()}
-  ctx.save();ctx.translate(cx,ny-SIZE/2);
-  const tilt=Math.sin(nod*Math.PI)*0.28;ctx.rotate(tilt);
-  const sq=1+Math.max(0,Math.min(.12,vy/9000));ctx.scale(1/sq,sq);
-  ctx.beginPath();ctx.arc(0,0,SIZE/2,0,7);ctx.closePath();ctx.fillStyle='#FDFBF7';ctx.fill();ctx.clip();
-  if(img.complete)ctx.drawImage(img,-SIZE/2,-SIZE/2,SIZE,SIZE);
+  const BW=118,BH=BW*bean.height/(bean.width||1);
+  ctx.save();ctx.translate(cx,ny-14);
+  const tilt=Math.sin(nod*Math.PI)*0.22;ctx.rotate(tilt);
+  const sq=1+Math.max(0,Math.min(.1,vy/9000));ctx.scale(1/sq,sq);
+  if(bean.complete&&bean.width)ctx.drawImage(bean,-BW/2,-BH,BW,BH);
   ctx.restore();
-  ctx.strokeStyle='rgba(168,127,226,.6)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,ny-SIZE/2,SIZE/2+1,0,7);ctx.stroke();
-  sparks.forEach(s=>{ctx.fillStyle=`rgba(118,221,180,${s.life})`;ctx.beginPath();ctx.arc(cx+s.x,ny-SIZE/2-s.y+40,4,0,7);ctx.fill()});
+  cloud(cx,ny+2,1);
+  sparks.forEach(s=>{ctx.fillStyle=`rgba(118,221,180,${s.life})`;ctx.beginPath();ctx.arc(cx+s.x,ny-s.y,4,0,7);ctx.fill()});
   popups.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.c;ctx.font='900 24px ui-rounded,system-ui';ctx.textAlign='center';ctx.fillText(p.t,p.x,p.y);ctx.textAlign='left';ctx.globalAlpha=1});
   $('h').textContent=Math.floor(y/M)+' m';
 }

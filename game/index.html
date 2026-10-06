@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Nod High · Nokkie</title>
+<meta name="description" content="Nod Nokkie as high as you can. No wallet. No sign-up. Just nodding." />
+<meta property="og:title" content="Nod High · Nokkie" />
+<meta property="og:description" content="Nod Nokkie as high as you can. No wallet. No sign-up. Just nodding." />
+<meta property="og:image" content="https://still-nodding.github.io/nokkie/assets/nokkie-pumpfun-512.png" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="../assets/nokkie-pumpfun-512.png" type="image/png" />
+<style>
+  :root{--cream:#FDFBF7;--purple:#A87FE2;--deep:#6B4A9E;--mint:#76DDB4;--ink:#2B1B4D}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--cream);color:var(--ink);font-family:ui-rounded,"Segoe UI",system-ui,sans-serif;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+  #wrap{position:relative;width:100%;height:100%;max-width:520px;margin:0 auto}
+  canvas{display:block;width:100%;height:100%}
+  .hud{position:absolute;top:12px;left:0;right:0;display:flex;justify-content:space-between;padding:0 16px;font-weight:800;pointer-events:none}
+  .pill{background:rgba(255,255,255,.85);border-radius:999px;padding:.3rem .8rem;box-shadow:0 4px 14px rgba(107,74,158,.15)}
+  .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem;gap:.8rem;background:rgba(253,251,247,.82)}
+  .hidden{display:none}
+  h1{font-size:2.6rem;letter-spacing:-.02em}
+  .tag{color:var(--deep);font-weight:700}
+  .how{max-width:340px;opacity:.9}
+  .big{font-size:3rem;font-weight:900;color:var(--deep)}
+  button,a.btn{font:inherit;font-weight:800;font-size:1.05rem;border:0;border-radius:999px;padding:.75rem 1.5rem;cursor:pointer;text-decoration:none}
+  .primary{background:var(--purple);color:#fff;box-shadow:0 8px 24px rgba(168,127,226,.4)}
+  .ghost{background:var(--mint);color:var(--ink)}
+  .overlay input:focus{outline:none;border-color:#6B4A9E}
+  .foot{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:.8rem;opacity:.7;pointer-events:none}
+  .foot a{pointer-events:auto;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div class="hud"><span class="pill" id="h">0 m</span><span class="pill" id="best">Best 0 m</span></div>
+
+  <div class="overlay" id="start">
+    <img src="nokkie.png" alt="Nokkie" width="150" height="150" style="border-radius:24px" />
+    <h1>Nod High</h1>
+    <p class="tag">How high can Nokkie nod?</p>
+    <p class="how">Tap (or press space) to launch. Tap again right at the top of each hop for a big nod boost. Too early wastes it. Touch the ground and it's over.</p>
+    <button class="primary" id="go">Start nodding</button>
+  </div>
+
+  <div class="overlay hidden" id="end">
+    <p>You nodded Nokkie up</p>
+    <div class="big" id="final">0 m</div>
+    <p id="bestline"></p>
+    <form id="save" style="display:flex;gap:.4rem">
+      <input id="name" maxlength="16" placeholder="Your name" autocomplete="off" style="font:inherit;padding:.6rem .9rem;border-radius:999px;border:2px solid #A87FE2;width:160px" />
+      <button class="ghost" type="submit">Save</button>
+    </form>
+    <div id="board" style="min-width:220px;text-align:left;background:#fff;border-radius:16px;padding:.6rem 1rem;box-shadow:0 4px 14px rgba(107,74,158,.15)">
+      <b>Top nods (this device)</b><ol id="list" style="margin:.3rem 0 0 1.2rem"></ol>
+    </div>
+    <p class="tag">Still nodding. Never leaving. Nokk.</p>
+    <button class="primary" id="again">Play again</button>
+    <a class="btn ghost" id="share" target="_blank" rel="noopener noreferrer">Share your nod</a>
+  </div>
+
+  <div class="foot">No wallet. No sign-up. Just nodding. · <a href="../">Home</a></div>
+</div>
+<script>
+(()=>{
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const img=new Image();img.src='nokkie.png';
+const $=id=>document.getElementById(id);
+const M=40; // px per meter
+let W,H,dpr;
+function resize(){dpr=Math.min(2,window.devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',resize);resize();
+
+const G=1900, SIZE=96;
+let state='menu',y,vy,maxY,combo,nod,popups,clouds,sparks,camY,last,best=+localStorage.getItem('nokkieNodHighBest')||0;
+$('best').textContent='Best '+best+' m';
+
+function seedClouds(){clouds=[];for(let i=0;i<40;i++)clouds.push({x:Math.random(),y:i*260+Math.random()*200+150,s:.6+Math.random()*.8})}
+function reset(){y=0;vy=0;maxY=0;combo=0;nod=0;popups=[];sparks=[];camY=0;seedClouds()}
+reset();
+
+function pop(t,c){popups.push({t,c,life:1,x:W/2+(Math.random()*60-30),y:H*0.45})}
+function burst(n){for(let i=0;i<n;i++)sparks.push({x:0,y:0,vx:(Math.random()-.5)*500,vy:Math.random()*300+100,life:1})}
+
+function tap(){
+  if(state==='menu'||state==='end')return;
+  nod=1;
+  if(y<=0.5&&vy===0){vy=1000;pop('Nokk!','#6B4A9E');return}
+  const win=Math.max(110,240-combo*8);
+  if(Math.abs(vy)<win){combo++;vy=Math.min(1050+combo*70,2200);pop(combo>1?'Nice nod x'+combo:'Nice nod','#2fae7d');burst(10+combo)}
+  else if(vy<0){vy=Math.max(vy,880);pop('Ok nod','#A87FE2');combo=0}
+  else{combo=0;pop('Too early','#c0567a')}
+}
+function start(){reset();state='play';$('start').classList.add('hidden');$('end').classList.add('hidden');last=performance.now();tap()}
+function end(){
+  state='end';const m=Math.floor(maxY/M);
+  if(m>best){best=m;localStorage.setItem('nokkieNodHighBest',best)}
+  $('best').textContent='Best '+best+' m';
+  $('final').textContent=m+' m';
+  $('bestline').textContent=m>=best&&m>0?'New best on this device!':'Your best: '+best+' m';
+  const url='https://still-nodding.github.io/nokkie/game/';
+  const text='I nodded @_nokkie_ '+m+' m into the sky. Can you nod higher?\n\n'+url+'\n\nNokk.';
+  $('share').href='https://x.com/intent/post?text='+encodeURIComponent(text);
+  lastM=m;saved=false;$('save').style.display=m>0?'flex':'none';renderBoard();
+  $('end').classList.remove('hidden');
+}
+const KEY='nokkieNodHighBoard';
+function board(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function renderBoard(){const l=$('list');l.textContent='';const b=board();if(!b.length){const li=document.createElement('li');li.textContent='No nods yet. Be first.';l.appendChild(li)}
+  b.forEach(r=>{const li=document.createElement('li');li.textContent=r.n+' · '+r.m+' m';l.appendChild(li)})}
+let lastM=0,saved=false;
+$('save').addEventListener('submit',e=>{e.preventDefault();if(saved)return;const n=($('name').value||'').replace(/[<>]/g,'').trim().slice(0,16)||'Anon nodder';
+  localStorage.setItem('nokkieNodHighName',n);const b=board();b.push({n,m:lastM});b.sort((a,c)=>c.m-a.m);localStorage.setItem(KEY,JSON.stringify(b.slice(0,10)));saved=true;$('save').style.display='none';renderBoard()});
+$('name').value=localStorage.getItem('nokkieNodHighName')||'';
+['pointerdown','keydown'].forEach(ev=>$('end').addEventListener(ev,e=>e.stopPropagation()));
+$('go').onclick=e=>{e.stopPropagation();start()};
+$('again').onclick=e=>{e.stopPropagation();start()};
+cv.addEventListener('pointerdown',e=>{e.preventDefault();tap()});
+addEventListener('keydown',e=>{if(document.activeElement===$('name'))return;if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(state!=='play')start();else tap()}});
+
+function step(dt){
+  // upward positive
+  vy-=G*dt; y+=vy*dt;
+  if(y>maxY)maxY=y;
+  if(y<=0){y=0;if(vy<0&&maxY>5){end()}vy=0}
+  nod=Math.max(0,nod-dt*5);
+  const target=Math.max(0,y-H*0.35);camY+= (target-camY)*Math.min(1,dt*6);
+  popups.forEach(p=>{p.life-=dt*1.2;p.y-=40*dt});popups=popups.filter(p=>p.life>0);
+  sparks.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy-=900*dt;s.life-=dt*1.5});sparks=sparks.filter(s=>s.life>0);
+  if(clouds.length&&clouds[clouds.length-1].y<camY+H*2)for(let i=0;i<10;i++){const ly=clouds[clouds.length-1].y;clouds.push({x:Math.random(),y:ly+200+Math.random()*200,s:.6+Math.random()*.8})}
+}
+function lerp(a,b,t){return a+(b-a)*t}
+function sky(){
+  const t=Math.min(1,camY/(M*400));
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,`rgb(${lerp(214,43,t)|0},${lerp(236,27,t)|0},${lerp(250,77,t)|0})`);
+  g.addColorStop(1,`rgb(${lerp(253,107,t)|0},${lerp(251,74,t)|0},${lerp(247,158,t)|0})`);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  if(t>.3){ctx.fillStyle=`rgba(255,255,255,${(t-.3)})`;for(let i=0;i<60;i++){const sx=(i*97%W),sy=((i*53+camY*0.05)%H);ctx.fillRect(sx,sy,2,2)}}
+}
+function draw(){
+  sky();
+  const ground=H-70+camY; // screen y of ground line
+  clouds.forEach(c=>{const sy=ground-c.y+ camY*0.0; const yy=H-70-(c.y-camY*0.6);if(yy<-60||yy>H+60)return;ctx.fillStyle='rgba(255,255,255,.75)';const x=c.x*W;ctx.beginPath();ctx.ellipse(x,yy,46*c.s,18*c.s,0,0,7);ctx.ellipse(x+26*c.s,yy-10*c.s,30*c.s,16*c.s,0,0,7);ctx.fill()});
+  // height markers
+  ctx.fillStyle='rgba(43,27,77,.35)';ctx.font='700 12px ui-rounded,system-ui';
+  for(let m=Math.floor(camY/M/10)*10;m<(camY+H)/M;m+=10){if(m<=0)continue;const yy=H-70-(m*M-camY);ctx.fillRect(0,yy,14,2);ctx.fillText(m+' m',18,yy+4)}
+  // ground
+  if(ground<H+10){ctx.fillStyle='#76DDB4';ctx.fillRect(0,ground,W,H-ground+200);ctx.fillStyle='#5cc79e';ctx.fillRect(0,ground,W,6)}
+  // nokkie
+  const ny=H-70-(y-camY);
+  const cx=W/2;
+  // shadow
+  if(ground<H+10){const s=Math.max(.2,1-y/(M*15));ctx.fillStyle=`rgba(43,27,77,${.18*s})`;ctx.beginPath();ctx.ellipse(cx,ground+2,40*s,8*s,0,0,7);ctx.fill()}
+  ctx.save();ctx.translate(cx,ny-SIZE/2);
+  const tilt=Math.sin(nod*Math.PI)*0.28;ctx.rotate(tilt);
+  const sq=1+Math.max(0,Math.min(.12,vy/9000));ctx.scale(1/sq,sq);
+  ctx.beginPath();ctx.arc(0,0,SIZE/2,0,7);ctx.closePath();ctx.fillStyle='#FDFBF7';ctx.fill();ctx.clip();
+  if(img.complete)ctx.drawImage(img,-SIZE/2,-SIZE/2,SIZE,SIZE);
+  ctx.restore();
+  ctx.strokeStyle='rgba(168,127,226,.6)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,ny-SIZE/2,SIZE/2+1,0,7);ctx.stroke();
+  sparks.forEach(s=>{ctx.fillStyle=`rgba(118,221,180,${s.life})`;ctx.beginPath();ctx.arc(cx+s.x,ny-SIZE/2-s.y+40,4,0,7);ctx.fill()});
+  popups.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.c;ctx.font='900 24px ui-rounded,system-ui';ctx.textAlign='center';ctx.fillText(p.t,p.x,p.y);ctx.textAlign='left';ctx.globalAlpha=1});
+  $('h').textContent=Math.floor(y/M)+' m';
+}
+function loop(){const t=performance.now();const dt=Math.max(0,Math.min(.033,(t-(last||t))/1000));last=t;if(state==='play')step(dt);draw();requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
